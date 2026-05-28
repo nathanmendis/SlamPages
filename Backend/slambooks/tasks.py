@@ -48,7 +48,19 @@ def generate_slam_pdf(book_id):
                     'answer': ans
                 })
             
+            writer_name = "Anonymous"
+            is_verified = False
+            if entry.author:
+                writer_name = entry.author.username
+                is_verified = getattr(entry.author, 'verified', False)
+            elif entry.anonymous_name:
+                writer_name = entry.anonymous_name
+
+            print(f"[DEBUG PDF] Entry ID: {entry.id}, Resolved Writer Name: {writer_name}, Verified: {is_verified}, Image: {entry.image_url}")
+            
             processed_entries.append({
+                'writer_name': writer_name,
+                'is_verified': is_verified,
                 'anonymous_name': entry.anonymous_name,
                 'author': entry.author,
                 'created_at': entry.created_at,
