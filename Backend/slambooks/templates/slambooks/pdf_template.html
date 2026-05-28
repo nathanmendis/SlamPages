@@ -1,0 +1,223 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+        }
+
+        @page {
+            size: letter;
+            margin: 0;
+        }
+
+        .page {
+            width: 8.5in;
+            height: 11in;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 0.5in;
+            position: relative;
+        }
+
+        /* ============= SCHOOL NOTEBOOK ============= */
+        .theme-notebook {
+            background-color: #fbfbf6;
+            background-image: repeating-linear-gradient(
+                0deg,
+                #e2e8f0 0px,
+                #e2e8f0 1px,
+                transparent 1px,
+                transparent 24px
+            );
+            background-position: 80px 0;
+            border-left: 3px solid #fca5a5;
+            padding-left: 1in;
+        }
+
+        /* ============= Y2K CYBER ============= */
+        .theme-y2k {
+            background: linear-gradient(135deg, #0d0c1d 0%, #1a1729 100%);
+            background-image: 
+                repeating-linear-gradient(0deg, #ff007f 0px, #ff007f 1px, transparent 1px, transparent 25px),
+                repeating-linear-gradient(90deg, #ff007f 0px, #ff007f 1px, transparent 1px, transparent 25px);
+            color: #00ffff;
+        }
+
+        .theme-y2k h1 { color: #ff007f; font-family: 'Courier New', monospace; font-weight: bold; }
+        .theme-y2k h2 { color: #ff007f; font-family: 'Courier New', monospace; }
+        .theme-y2k .meta { color: #39ff14; font-family: 'Courier New', monospace; }
+        .theme-y2k .question { color: #ff007f; font-weight: bold; }
+        .theme-y2k .answer { color: #00ffff; }
+
+        /* ============= VINTAGE DIARY ============= */
+        .theme-diary {
+            background-color: #f7f1e3;
+            border: 8px double #d1ccc0;
+            box-shadow: inset 0 0 0 2px #c9bfb4;
+        }
+
+        .theme-diary h1 { color: #8b5a2b; font-family: 'Georgia', serif; font-weight: bold; }
+        .theme-diary h2 { color: #8b5a2b; font-family: 'Georgia', serif; }
+        .theme-diary .meta { color: #b38f00; font-family: 'Georgia', serif; font-style: italic; }
+        .theme-diary .question { color: #8b5a2b; font-weight: bold; }
+        .theme-diary .answer { color: #5a3d28; font-family: 'Georgia', serif; font-style: italic; }
+
+        /* ============= POLAROID MEMORY ============= */
+        .theme-polaroid {
+            background-color: #ffffff;
+            border: 20px solid #ffffff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-bottom-width: 60px;
+        }
+
+        .theme-polaroid h1 { color: #1e1b4b; font-weight: bold; }
+        .theme-polaroid h2 { color: #1e1b4b; }
+        .theme-polaroid .meta { color: #4f46e5; font-size: 0.85em; }
+        .theme-polaroid .question { color: #1e1b4b; font-weight: bold; }
+        .theme-polaroid .answer { color: #0f172a; }
+
+        /* ============= DARK ACADEMIA ============= */
+        .theme-academia {
+            background-color: #eae3d2;
+            border-top: 4px solid #5d4037;
+            border-bottom: 4px solid #5d4037;
+            padding-top: 0.8in;
+            padding-bottom: 0.8in;
+        }
+
+        .theme-academia h1 { color: #3e2723; font-family: 'Courier New', monospace; font-weight: bold; }
+        .theme-academia h2 { color: #3e2723; font-family: 'Courier New', monospace; }
+        .theme-academia .meta { color: #5d4037; font-family: 'Courier New', monospace; }
+        .theme-academia .question { color: #3e2723; font-weight: bold; }
+        .theme-academia .answer { color: #3e2723; }
+
+        /* ============= SHARED STYLES ============= */
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2in 1in;
+        }
+
+        .cover-page h1 {
+            font-size: 3em;
+            margin-bottom: 0.5in;
+            word-wrap: break-word;
+        }
+
+        .cover-page .description {
+            font-size: 1.2em;
+            margin-bottom: 1.5in;
+            max-width: 6in;
+        }
+
+        .cover-page .owner {
+            font-size: 0.9em;
+            margin-top: auto;
+            opacity: 0.7;
+        }
+
+        .entry-page {
+            padding: 0.75in 1in;
+        }
+
+        .entry-page h2 {
+            font-size: 1.8em;
+            margin-bottom: 0.3in;
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 0.2in;
+        }
+
+        .meta {
+            font-size: 0.85em;
+            margin-bottom: 0.3in;
+            opacity: 0.8;
+        }
+
+        .question {
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 0.2in;
+            margin-bottom: 0.1in;
+        }
+
+        .answer {
+            font-size: 0.95em;
+            margin-bottom: 0.3in;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 0.3in 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 2in;
+            border-radius: 0.2in;
+        }
+
+        @media print {
+            body { margin: 0; padding: 0; }
+            .page { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- COVER PAGE -->
+    <div class="page cover-page theme-{{ theme_class }}">
+        <h1>{{ book.title }}</h1>
+        <p class="description">{{ book.description }}</p>
+        <p class="meta">Created by {{ owner_username }}</p>
+        <p class="owner">{{ created_date }}</p>
+    </div>
+
+    <!-- ENTRY PAGES -->
+    {% for entry in entries %}
+    <div class="page entry-page theme-{{ theme_class }}">
+        <h2>Entry {{ forloop.counter }}</h2>
+        
+        {% if entry.image_url %}
+        <div class="image-container">
+            <img src="data:image/png;base64,{{ entry.image_url|base64_encode }}" alt="Entry image">
+        </div>
+        {% endif %}
+
+        <p class="meta">
+            By {% if entry.anonymous_name %}{{ entry.anonymous_name }}{% elif entry.author %}{{ entry.author.username }}{% else %}Anonymous{% endif %}
+            on {{ entry.created_at|date:"M d, Y" }}
+        </p>
+
+        {% for question_id, answer_text in entry.answers.items %}
+        <div class="question-answer">
+            <p class="question">{{ question_id }}</p>
+            <p class="answer">{{ answer_text }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <div class="page cover-page theme-{{ theme_class }}">
+        <h2>No entries yet</h2>
+        <p class="meta">Share the link with friends to gather some memories!</p>
+    </div>
+    {% endfor %}
+</body>
+</html>

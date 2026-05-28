@@ -1,0 +1,44 @@
+# Gitignore for the Slam project (backend + frontend)
+# =============================
+# General
+*.log
+*.sqlite3
+*.sqlite
+*.DS_Store
+Thumbs.db
+# Python / backend
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+env/
+.venv/
+ENV/
+venv/
+ENVIRONMENT/
+# Django specific
+*.mypy_cache/
+local_settings.py
+# If you have a .env file for secrets
+.env
+# Optional: ignore migrations if you prefer (usually keep them)
+# */migrations/__pycache__/
+# Frontend / JavaScript / React
+node_modules/
+/build/
+/dist/
+.public/
+.cache/
+# Vite / Next.js caches
+/.next/
+/.nuxt/
+/.vite/
+# IDE / editor
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+# OS generated files
+.DS_Store
+
+Backend/media/

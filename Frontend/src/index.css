@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans;
+  }
+}
+
+/* Core Scrapbook Themes Design System */
+
+/* 1. School Notebook Theme */
+.theme-notebook-paper {
+  background-color: #fbfbf6;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 68, 68, 0.15) 1px, transparent 1px);
+  background-size: 100% 28px, 100% 100%;
+  background-position: 0 0, 56px 0;
+  border: 1px solid #e5e5d8;
+  position: relative;
+}
+
+.theme-notebook-paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 55px;
+  width: 2px;
+  background-color: rgba(239, 68, 68, 0.3);
+}
+
+/* 2. Y2K Theme */
+.theme-y2k-grid {
+  background-color: #0d0c1d;
+  background-image: 
+    linear-gradient(rgba(255, 0, 127, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 127, 0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 2px solid #ff007f;
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+}
+
+.y2k-neon-glow {
+  text-shadow: 0 0 8px #ff007f, 0 0 15px #ff007f;
+}
+
+.y2k-neon-border {
+  box-shadow: 0 0 10px #ff007f, inset 0 0 5px #ff007f;
+}
+
+/* 3. Polaroid Theme */
+.theme-polaroid-frame {
+  background-color: #ffffff;
+  padding: 16px 16px 48px 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  transform: rotate(-1deg);
+  transition: transform 0.3s ease;
+}
+
+.theme-polaroid-frame:hover {
+  transform: rotate(1deg) scale(1.02);
+}
+
+.polaroid-tape {
+  background: rgba(254, 240, 138, 0.6); /* Translucent yellow tape */
+  backdrop-filter: blur(1px);
+  transform: rotate(-3deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* 4. Diary Theme */
+.theme-diary-parchment {
+  background-color: #f7f1e3;
+  background-image: radial-gradient(rgba(0,0,0,0.02) 1px, transparent 0);
+  background-size: 16px 16px;
+  border: 4px double #d1ccc0;
+}
+
+.diary-header {
+  border-bottom: 1px dashed #d1ccc0;
+}
+
+/* 5. Dark Academia Theme */
+.theme-academia-sepia {
+  background-color: #eae3d2;
+  border: 1px solid #d4c5a9;
+  box-shadow: inset 0 0 60px rgba(139, 90, 43, 0.15), 3px 3px 15px rgba(0,0,0,0.08);
+  font-family: "Courier Prime", Courier, monospace;
+}
+
+.academia-ink-border {
+  border-bottom: 2px solid #5d4037;
+}
+
+/* Page Flip Animations & Curls */
+.page-curl {
+  position: relative;
+}
+
+.page-curl::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 16px 16px;
+  border-color: transparent transparent #e2e8f0 transparent;
+  box-shadow: -2px -2px 5px rgba(0,0,0,0.06);
+  transition: border-width 0.2s ease;
+}
+
+.page-curl:hover::after {
+  border-width: 0 0 28px 28px;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom Scrollbar for Scrapbook */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
