@@ -247,30 +247,34 @@ const Dashboard = () => {
                         <span>{copiedId === book.id ? 'Copied' : 'Share'}</span>
                       </button>
 
-                      {pdfDownloadUrls[book.id] ? (
+                      {pdfDownloadUrls[book.id] && (
                         <a
                           href={pdfDownloadUrls[book.id]}
                           download
                           onClick={(e) => e.stopPropagation()}
                           className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center justify-center transition"
-                          title="Download PDF"
+                          title="PDF Already Generated! Click to Download"
                         >
                           <Download className="w-4 h-4" />
                         </a>
-                      ) : (
-                        <button
-                          onClick={(e) => handleGeneratePDF(book.id, e)}
-                          disabled={pdfGenerating[book.id]}
-                          className="px-3 py-2 bg-white/70 backdrop-blur border border-stone-300 hover:bg-white text-stone-700 rounded-lg flex items-center justify-center transition"
-                          title="Generate PDF"
-                        >
-                          {pdfGenerating[book.id] ? (
-                            <Loader2 className="w-4 h-4 animate-spin text-amber-900" />
-                          ) : (
-                            <FileText className="w-4 h-4" />
-                          )}
-                        </button>
                       )}
+
+                      <button
+                        onClick={(e) => handleGeneratePDF(book.id, e)}
+                        disabled={pdfGenerating[book.id]}
+                        className={`px-3 py-2 rounded-lg flex items-center justify-center transition border ${
+                          pdfDownloadUrls[book.id]
+                            ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-900'
+                            : 'bg-white/70 backdrop-blur border-stone-300 hover:bg-white text-stone-700'
+                        }`}
+                        title={pdfDownloadUrls[book.id] ? "Regenerate New PDF (Deletes and replaces old one)" : "Generate PDF"}
+                      >
+                        {pdfGenerating[book.id] ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-amber-900" />
+                        ) : (
+                          <FileText className="w-4 h-4" />
+                        )}
+                      </button>
 
                       <button
                         onClick={(e) => handleDeleteBook(book.id, e)}

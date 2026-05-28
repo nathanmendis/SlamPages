@@ -15,7 +15,15 @@ def base64_encode(value):
         return ""
     
     try:
-        # If it's a file path (relative or absolute), read it
+        # Handle Django FieldFile objects (ImageField instances)
+        if hasattr(value, 'path'):
+            file_path = Path(value.path)
+            if file_path.exists():
+                with open(file_path, 'rb') as f:
+                    image_data = f.read()
+                return base64.b64encode(image_data).decode('utf-8')
+
+        # If it's a file path string (relative or absolute), read it
         if isinstance(value, str):
             # Check if it's a relative path in media folder
             if not value.startswith(('http://', 'https://', '/')):

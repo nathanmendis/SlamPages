@@ -83,6 +83,13 @@ def generate_slam_pdf(book_id):
         pdf_dir = Path(settings.MEDIA_ROOT) / 'pdfs'
         pdf_dir.mkdir(parents=True, exist_ok=True)
         pdf_path = pdf_dir / f"{book_id}.pdf"
+        
+        # If a PDF was already generated, delete the old one
+        if pdf_path.exists():
+            try:
+                pdf_path.unlink()
+            except Exception as e:
+                print(f"Failed to delete old PDF: {str(e)}")
 
         # Use synchronous Playwright to convert HTML to PDF
         with sync_playwright() as p:

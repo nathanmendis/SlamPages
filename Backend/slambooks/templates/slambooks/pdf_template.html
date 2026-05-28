@@ -197,14 +197,14 @@
         <div class="entry-header" style="border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 0.15in; margin-bottom: 0.3in;">
             <h2 style="font-size: 1.8em; font-family: 'Georgia', serif; font-weight: bold; display: flex; align-items: center; gap: 6px; border-bottom: none; padding-bottom: 0; margin-bottom: 4px;">
                 {{ forloop.counter }}. Page by 
-                {% if entry.anonymous_name %}
-                    {{ entry.anonymous_name }}
-                {% elif entry.author %}
+                {% if entry.author %}
                     {{ entry.author.username }}
+                {% elif entry.anonymous_name %}
+                    {{ entry.anonymous_name }}
                 {% else %}
                     Anonymous
                 {% endif %}
-                {% if entry.author.verified %}
+                {% if entry.author and entry.author.verified %}
                     <span style="background-color: #f59e0b; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; margin-left: 4px; font-weight: bold; font-family: sans-serif;">✓</span>
                 {% endif %}
             </h2>
