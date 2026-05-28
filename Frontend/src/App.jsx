@@ -12,6 +12,7 @@ import SlamSubmissionPage from './pages/SlamSubmissionPage';
 import FlipbookViewer from './pages/FlipbookViewer';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordConfirmPage from './pages/ResetPasswordConfirmPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 // Protected Route Wrapper Component
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SlamCreationPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboardPage />
               </ProtectedRoute>
             }
           />

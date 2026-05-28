@@ -76,3 +76,20 @@ class ReportSerializer(serializers.ModelSerializer):
         model = Report
         fields = ('id', 'entry', 'reason', 'status', 'created_at')
         read_only_fields = ('id', 'status', 'created_at')
+
+class AdminSlamEntrySerializer(serializers.ModelSerializer):
+    author_username = serializers.ReadOnlyField(source='author.username')
+    author_avatar = serializers.ReadOnlyField(source='author.avatar')
+    author_verified = serializers.ReadOnlyField(source='author.verified')
+    slam_book_title = serializers.ReadOnlyField(source='slam_book.title')
+
+    class Meta:
+        model = SlamEntry
+        fields = ('id', 'slam_book', 'slam_book_title', 'author', 'author_username', 'author_avatar', 'author_verified', 'anonymous_name', 'answers', 'theme', 'image_url', 'ip_address', 'user_agent', 'created_at')
+
+class AdminReportSerializer(serializers.ModelSerializer):
+    entry_detail = AdminSlamEntrySerializer(source='entry', read_only=True)
+
+    class Meta:
+        model = Report
+        fields = ('id', 'entry', 'entry_detail', 'reason', 'status', 'created_at')

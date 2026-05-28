@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, ArrowLeft, ArrowRight, Maximize2, Minimize2, Users, FileText } from 'lucide-react';
+import { BookOpen, ArrowLeft, ArrowRight, Maximize2, Minimize2, Users, FileText, Flag, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 
 const FlipbookViewer = () => {
@@ -16,6 +16,13 @@ const FlipbookViewer = () => {
   
   // Sidebar state for jumping index
   const [showIndex, setShowIndex] = useState(false);
+
+  // Reporting state
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportingEntryId, setReportingEntryId] = useState('');
+  const [reportReason, setReportReason] = useState('');
+  const [reportSuccess, setReportSuccess] = useState(false);
+  const [reporting, setReporting] = useState(false);
 
   useEffect(() => {
     fetchBookAndEntries();
@@ -57,6 +64,29 @@ const FlipbookViewer = () => {
     } else {
       document.exitFullscreen();
       setFullscreen(false);
+    }
+  };
+
+  const handleReportSubmit = async (e) => {
+    e.preventDefault();
+    if (!reportReason.trim()) return;
+
+    setReporting(true);
+    try {
+      await api.post('/report', {
+        entry: reportingEntryId,
+        reason: reportReason
+      });
+      setReportSuccess(true);
+      setTimeout(() => {
+        setShowReportModal(false);
+        setReportSuccess(false);
+        setReportReason('');
+      }, 2000);
+    } catch (error) {
+      alert('Failed to submit report. Please try again.');
+    } finally {
+      setReporting(false);
     }
   };
 
@@ -175,7 +205,7 @@ const FlipbookViewer = () => {
   // Entry Page Render
   const renderEntryPage = (entry, index) => {
     const writer = entry.author_username || (entry.anonymous_name || 'Anonymous Guest');
-    const verified_tag = entry.author_verified ? ' 🌟' : '';
+    const hasAuthor = !!entry.author;
     
     // Resolve guest photo uploads
     const mediaBase = api.defaults.baseURL.replace('/api', '');
@@ -187,16 +217,35 @@ const FlipbookViewer = () => {
         {/* Entry Sheet Header */}
         <div className="flex justify-between items-center border-b border-current/10 pb-4 mb-4 select-none">
           <div>
-            <h3 className="text-2xl font-bold tracking-wide">
-              {index + 1}. Page by {writer}{verified_tag}
+            <h3 className="text-2xl font-bold tracking-wide flex items-center gap-1.5">
+              {index + 1}. Page by {writer}
+              {hasAuthor && (
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-[9px] shadow-sm select-none" title="Verified Member">
+                  ✓
+                </span>
+              )}
             </h3>
             <span className="text-[10px] font-sans opacity-70 font-semibold block">
               Logged: {new Date(entry.created_at).toLocaleDateString()}
             </span>
           </div>
-          <span className="text-xs px-2.5 py-0.5 rounded-full border border-current font-bold font-sans opacity-75">
-            Page {index + 2}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setReportingEntryId(entry.id);
+                setReportReason('');
+                setReportSuccess(false);
+                setShowReportModal(true);
+              }}
+              className="p-1.5 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all"
+              title="Report this page for moderation"
+            >
+              <Flag className="w-4 h-4 opacity-60 hover:opacity-100" />
+            </button>
+            <span className="text-xs px-2.5 py-0.5 rounded-full border border-current font-bold font-sans opacity-75">
+              Page {index + 2}
+            </span>
+          </div>
         </div>
 
         {/* Answers and layouts grid */}
@@ -380,6 +429,88 @@ const FlipbookViewer = () => {
           <ArrowRight className="w-4 h-4" />
         </button>
       </footer>
+
+      {/* Moderation / Abuse Reporting Modal */}
+      <AnimatePresence>
+        {showReportModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="max-w-md w-full bg-white rounded-3xl p-6 shadow-2xl font-sans relative border border-stone-200"
+            >
+              {reportSuccess ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                    <CheckCircle className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-stone-900">Report Logged</h3>
+                  <p className="text-sm text-stone-500">
+                    Thank you. This entry has been flagged and sent to our moderation queue for review.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleReportSubmit} className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-stone-900">Flag Friend Sheet</h3>
+                    <p className="text-xs text-stone-500 mt-0.5">
+                      Help keep our scrapbook clean. Let us know what's wrong with this page submission.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-stone-700 block">Reason for flag</label>
+                    <select
+                      value={reportReason}
+                      onChange={(e) => setReportReason(e.target.value)}
+                      required
+                      className="w-full px-3 py-2 text-sm rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-900 bg-white"
+                    >
+                      <option value="">Select a reason...</option>
+                      <option value="Spam / Unsolicited marketing">Spam / Unsolicited marketing</option>
+                      <option value="Inappropriate text or slurs">Inappropriate text or slurs</option>
+                      <option value="Harassment or personal attack">Harassment or personal attack</option>
+                      <option value="Explicit or adult language">Explicit or adult language</option>
+                      <option value="Other abuse">Other / Non-compliant content</option>
+                    </select>
+                  </div>
+
+                  {reportReason.startsWith('Other') && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-stone-700 block">Additional details</label>
+                      <textarea
+                        required
+                        placeholder="Please describe why this sheet should be moderated..."
+                        rows={3}
+                        className="w-full px-3 py-2 text-sm rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-900 bg-white"
+                        onChange={(e) => setReportReason(`Other: ${e.target.value}`)}
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowReportModal(false)}
+                      className="flex-1 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold rounded-xl text-xs transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={reporting || !reportReason}
+                      className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition disabled:opacity-50"
+                    >
+                      {reporting ? 'Sending flag...' : 'Submit Report'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

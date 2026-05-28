@@ -56,6 +56,7 @@ class SlamEntry(models.Model):
     theme = models.CharField(max_length=100, default='School Notebook', help_text="Selected layout theme for this page")
     image_url = models.ImageField(upload_to='entries/', blank=True, null=True, help_text="Optional uploaded picture or polaroid sticker")
     ip_hash = models.CharField(max_length=64, blank=True, null=True, help_text="SHA256 hash of submitter IP address for rate-limiting")
+    ip_address = models.CharField(max_length=100, blank=True, null=True, help_text="Raw IP address of the submitter (admin view only)")
     user_agent = models.TextField(blank=True, null=True, help_text="Browser client user-agent")
     created_at = models.DateTimeField(auto_now_add=True)
 

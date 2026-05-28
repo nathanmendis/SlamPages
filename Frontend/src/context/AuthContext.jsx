@@ -21,10 +21,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await api.post('/auth/login', { username, password });
-      const { tokens, user: userData } = response.data;
+      const { tokens, access, refresh, user: userData } = response.data;
       
-      localStorage.setItem('access_token', tokens.access);
-      localStorage.setItem('refresh_token', tokens.refresh);
+      const accessToken = tokens ? tokens.access : access;
+      const refreshToken = tokens ? tokens.refresh : refresh;
+      
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
       localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
@@ -40,10 +43,13 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password) => {
     try {
       const response = await api.post('/auth/register', { username, email, password });
-      const { tokens, user: userData } = response.data;
+      const { tokens, access, refresh, user: userData } = response.data;
 
-      localStorage.setItem('access_token', tokens.access);
-      localStorage.setItem('refresh_token', tokens.refresh);
+      const accessToken = tokens ? tokens.access : access;
+      const refreshToken = tokens ? tokens.refresh : refresh;
+
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
       localStorage.setItem('user', JSON.stringify(userData));
 
       setUser(userData);
@@ -65,10 +71,13 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async (token) => {
     try {
       const response = await api.post('/auth/google', { token });
-      const { tokens, user: userData } = response.data;
+      const { tokens, access, refresh, user: userData } = response.data;
 
-      localStorage.setItem('access_token', tokens.access);
-      localStorage.setItem('refresh_token', tokens.refresh);
+      const accessToken = tokens ? tokens.access : access;
+      const refreshToken = tokens ? tokens.refresh : refresh;
+
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
       localStorage.setItem('user', JSON.stringify(userData));
 
       setUser(userData);

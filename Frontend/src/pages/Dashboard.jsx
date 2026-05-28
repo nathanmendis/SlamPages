@@ -166,13 +166,24 @@ const Dashboard = () => {
               <h2 className="text-3xl font-bold font-diary text-stone-900">My Memory Books</h2>
               <p className="text-sm text-stone-500 font-sans">Click a card to inspect entries</p>
             </div>
-            <Link
-              to="/create-slambook"
-              className="px-4 py-2.5 bg-amber-900 hover:bg-amber-800 text-white font-bold rounded-xl flex items-center gap-2 text-sm shadow-scrapbook transition"
-            >
-              <Plus className="w-4 h-4" />
-              <span>New SlamBook</span>
-            </Link>
+            <div className="flex items-center gap-2">
+              {user?.is_staff && (
+                <Link
+                  to="/admin/dashboard"
+                  className="px-4 py-2.5 bg-red-950 hover:bg-red-900 border border-red-900/30 text-white font-bold rounded-xl flex items-center gap-2 text-sm shadow-scrapbook transition"
+                >
+                  <ShieldAlert className="w-4 h-4 text-red-400" />
+                  <span>Mod Panel</span>
+                </Link>
+              )}
+              <Link
+                to="/create-slambook"
+                className="px-4 py-2.5 bg-amber-900 hover:bg-amber-800 text-white font-bold rounded-xl flex items-center gap-2 text-sm shadow-scrapbook transition"
+              >
+                <Plus className="w-4 h-4" />
+                <span>New SlamBook</span>
+              </Link>
+            </div>
           </div>
 
           {loading ? (
@@ -322,8 +333,13 @@ const Dashboard = () => {
                             {writer[0]}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-stone-800">
-                              {writer} {entry.author_verified && <span className="text-emerald-600 text-xs">🌟</span>}
+                            <div className="text-sm font-bold text-stone-800 flex items-center gap-1">
+                              {writer}
+                              {(entry.author_verified || entry.author) && (
+                                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-amber-500 text-white font-extrabold text-[8px] shadow-sm select-none" title="Verified Member">
+                                  ✓
+                                </span>
+                              )}
                             </div>
                             <div className="text-[10px] text-stone-400">
                               {new Date(entry.created_at).toLocaleDateString()} | Theme: {entry.theme}

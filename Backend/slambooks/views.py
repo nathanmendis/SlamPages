@@ -12,7 +12,7 @@ from django.core.cache import cache
 from better_profanity import profanity
 
 from .models import SlamBook, SlamQuestion, SlamEntry, Report
-from .serializers import SlamBookSerializer, SlamEntrySerializer, ReportSerializer
+from .serializers import SlamBookSerializer, SlamEntrySerializer, ReportSerializer, AdminReportSerializer, AdminSlamEntrySerializer
 from .tasks import generate_slam_pdf
 
 # Load profanity dictionary
@@ -100,19 +100,11 @@ class SlamBookCreateView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 class SlamBookDetailView(APIView):
-    """Endpoint to fetch a Slam Book by its unique slug (owner-only access)"""
-    permission_classes = [permissions.IsAuthenticated]
+    """Endpoint to fetch a Slam Book by its unique slug (Public access for submissions)"""
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, slug):
         slam_book = get_object_or_404(SlamBook, slug=slug)
-        
-        # Only allow the owner to view the book
-        if slam_book.owner != request.user:
-            return Response(
-                {'error': 'You do not have permission to view this slam book.'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        
         serializer = SlamBookSerializer(slam_book)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -171,6 +163,7 @@ class SlamEntryCreateView(APIView):
             theme=theme,
             image_url=image_file,
             ip_hash=ip_hash,
+            ip_address=ip,
             user_agent=user_agent
         )
         entry.save()
@@ -238,3 +231,88 @@ class ReportCreateView(generics.CreateAPIView):
     """Public endpoint to flag an entry for abuse/moderation"""
     serializer_class = ReportSerializer
     permission_classes = [permissions.AllowAny]
+
+# --- Admin Dashboard Endpoints ---
+
+class AdminReportListView(generics.ListAPIView):
+    """Admin-only endpoint to view all logged abuse/moderation reports"""
+    serializer_class = AdminReportSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_queryset(self):
+        status_filter = self.request.query_params.get('status')
+        queryset = Report.objects.select_related('entry', 'entry__slam_book', 'entry__author').all().order_by('-created_at')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        return queryset
+
+class AdminReportDetailView(generics.RetrieveUpdateAPIView):
+    """Admin-only endpoint to fetch/update status of a specific report"""
+    queryset = Report.objects.all()
+    serializer_class = AdminReportSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+class AdminSlamEntryDeleteView(APIView):
+    """Admin-only endpoint to purge an entry and auto-resolve associated reports"""
+    permission_classes = [permissions.IsAdminUser]
+
+    def delete(self, request, entry_id):
+        entry = get_object_or_404(SlamEntry, id=entry_id)
+        
+        # Mark all reports pointing to this entry as resolved
+        Report.objects.filter(entry=entry).update(status='resolved')
+        
+        # Purge the offending entry (Cascade deletes any remaining report instances if needed, or preserves resolved state)
+        entry.delete()
+        
+        return Response({
+            'message': 'Offending entry successfully deleted and all associated reports marked as resolved.'
+        }, status=status.HTTP_200_OK)
+
+class AdminCreateView(APIView):
+    """Admin-only endpoint to register a new admin/staff member"""
+    permission_classes = [permissions.IsAdminUser]
+
+    def post(self, request):
+        username = request.data.get('username')
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not (username and email and password):
+            return Response(
+                {'error': 'Username, email, and password are required.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {'error': 'A user with this username already exists.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {'error': 'A user with this email already exists.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Create a user with staff access
+            User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                is_staff=True,
+                verified=True  # Admins are automatically verified creators
+            )
+            return Response({
+                'message': f"Admin user '{username}' successfully registered."
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response(
+                {'error': f"Failed to create admin user: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

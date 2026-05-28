@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(BASE_DIR / '.env')
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-slambook-mvp-secret-key-12345')
-DEBUG = env('DEBUG')
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+DEBUG =False
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -116,9 +116,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Proactively ensure media folder exists
 os.makedirs(MEDIA_ROOT, exist_ok=True)
-
+CSRF_TRUSTED_ORIGINS=["https://slam.nathanmendis.in", "https://slampages.nathanmendis.in"]    
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+ALLOWED_HOSTS = [
+    "slam.nathanmendis.in",
+    "localhost",
+    "127.0.0.1"
+]
 # CORS Configurations
 CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS')
 CORS_ALLOW_CREDENTIALS = True

@@ -3,7 +3,8 @@ from .views import (
     HealthCheckView,
     SlamBookCreateView, SlamBookDetailView, SlamBookUpdateDeleteView,
     SlamEntryCreateView, SlamEntryListView, SlamEntryDeleteView,
-    GeneratePDFView, ReportCreateView
+    GeneratePDFView, ReportCreateView,
+    AdminReportListView, AdminReportDetailView, AdminSlamEntryDeleteView, AdminCreateView
 )
 
 urlpatterns = [
@@ -19,4 +20,10 @@ urlpatterns = [
     path('pdf/generate/<uuid:book_id>', GeneratePDFView.as_view(), name='pdf_generate'),
     
     path('report', ReportCreateView.as_view(), name='report_create'),
+
+    # Admin Moderation Dashboard Endpoints
+    path('admin/reports', AdminReportListView.as_view(), name='admin_reports_list'),
+    path('admin/reports/<uuid:pk>', AdminReportDetailView.as_view(), name='admin_report_detail'),
+    path('admin/entries/<uuid:entry_id>', AdminSlamEntryDeleteView.as_view(), name='admin_entry_delete'),
+    path('admin/create-admin', AdminCreateView.as_view(), name='admin_create_admin'),
 ]
