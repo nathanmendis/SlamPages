@@ -269,7 +269,9 @@ const SlamSubmissionPage = () => {
                   <span>Verified User ({user.username})</span>
                 </button>
               ) : (
-                <span className="text-stone-500 italic">Sign in to publish as a verified creator.</span>
+                <span className="text-stone-500 italic">
+                  <Link to="/login" className="underline hover:text-amber-900 font-bold transition">Sign in</Link> to publish as a verified creator.
+                </span>
               )}
               
               <button
