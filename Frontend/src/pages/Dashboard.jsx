@@ -36,7 +36,7 @@ const Dashboard = () => {
       userBooks.forEach(book => {
         if (book.pdf_url) {
           const mediaBase = api.defaults.baseURL.replace('/api', '');
-          urls[book.id] = `${mediaBase}${book.pdf_url}`;
+          urls[book.id] = `${mediaBase}${book.pdf_url}?t=${new Date().getTime()}`;
         }
       });
       setPdfDownloadUrls(urls);
@@ -101,9 +101,9 @@ const Dashboard = () => {
       // For this MVP, since pdf compiles in <2 seconds, we wait 2 seconds, and then enable download!
       setTimeout(() => {
         setPdfGenerating(prev => ({ ...prev, [bookId]: false }));
-        // Format link properly to hit local media static folder
+        // Format link properly to hit local media static folder with cache-busting timestamp
         const mediaBase = api.defaults.baseURL.replace('/api', '');
-        setPdfDownloadUrls(prev => ({ ...prev, [bookId]: `${mediaBase}${download_url}` }));
+        setPdfDownloadUrls(prev => ({ ...prev, [bookId]: `${mediaBase}${download_url}?t=${new Date().getTime()}` }));
       }, 2500);
     } catch (err) {
       console.error('Failed to generate PDF', err);
