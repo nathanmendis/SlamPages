@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Share2, Sparkles, Heart, Users } from 'lucide-react';
+import { BookOpen, Share2, Sparkles, Heart, Users, FileDown, ShieldAlert, Activity, Link2 } from 'lucide-react';
+
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const LandingPage = () => {
   const { user } = useAuth();
@@ -46,51 +49,18 @@ const LandingPage = () => {
       ? 'bg-slate-300'
       : 'bg-amber-500';
 
-  const themesShowcase = [
-    { name: 'School Notebook', desc: 'Blue ruled lines, margins, handwriting style.', cls: 'theme-notebook-paper font-notebook text-slate-800 p-6', font: 'font-notebook' },
-    { name: 'Y2K Cyber', desc: 'Neon pink grid, glowing fonts, retro sci-fi.', cls: 'theme-y2k-grid font-y2k text-pink-500 p-6', font: 'font-y2k' },
-    { name: 'Polaroid Memory', desc: 'White snapshot borders, paper tapes, markers.', cls: 'theme-polaroid-frame font-polaroid text-indigo-900 p-6', font: 'font-polaroid' },
-    { name: 'Vintage Diary', desc: 'Cream radial dots, elegant double-borders.', cls: 'theme-diary-parchment font-diary text-amber-950 p-6', font: 'font-diary' },
-    { name: 'Dark Academia', desc: 'Sepia typewriter sheets, ink stamps, sepia tones.', cls: 'theme-academia-sepia font-academia text-[#3e2723] p-6', font: 'font-academia' }
-  ];
 
   return (
-    <div className="relative min-h-screen pb-16">
+    <div className="relative min-h-screen flex flex-col">
       {/* Decorative Scrapbook Elements */}
       <div className="absolute top-12 left-4 w-12 h-8 bg-yellow-200/50 -rotate-12 rounded-sm shadow-sm hidden md:block"></div>
       <div className="absolute top-24 right-8 w-16 h-8 bg-indigo-100/50 rotate-45 rounded-sm shadow-sm hidden md:block"></div>
       
-      {/* Navigation Header */}
-      <header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BookOpen className="w-8 h-8 text-amber-600" />
-          <span className="text-2xl font-bold font-diary tracking-tight text-amber-950">SlamBook</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-2 border border-slate-200 text-sm text-slate-700">
-            <span className={`h-2.5 w-2.5 rounded-full ${backendDotClass}`} />
-            <span>{backendLabel}</span>
-          </div>
-
-          {user ? (
-            <Link to="/dashboard" className="px-5 py-2.5 rounded-xl bg-amber-900 text-white font-medium hover:bg-amber-800 transition duration-150 shadow-scrapbook">
-              My Dashboard
-            </Link>
-          ) : (
-            <>
-              <Link to="/login" className="text-amber-950 hover:underline font-semibold">
-                Login
-              </Link>
-              <Link to="/signup" className="px-5 py-2.5 rounded-xl bg-amber-900 text-white font-medium hover:bg-amber-800 transition duration-150 shadow-scrapbook">
-                Get Started
-              </Link>
-            </>
-          )}
-        </div>
-      </header>
+      {/* Reusable Header */}
+      <Header />
 
       {/* Hero Section */}
-      <section className="max-w-5xl mx-auto px-6 pt-16 pb-24 text-center">
+      <section className="max-w-5xl mx-auto px-6 pt-16 pb-24 text-center flex-1">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -119,86 +89,125 @@ const LandingPage = () => {
               <BookOpen className="w-5 h-5" />
             </Link>
             <a
-              href="#demo"
+              href="#features"
               className="w-full sm:w-auto px-8 py-4 bg-white text-amber-950 font-bold rounded-2xl border-2 border-amber-900/10 hover:bg-amber-50/50 transition duration-150 text-lg flex items-center justify-center"
             >
-              Explore Themes
+              See Features
             </a>
           </div>
         </motion.div>
       </section>
 
       {/* Feature Showcase */}
-      <section className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-8">
-        <div className="bg-white p-8 rounded-3xl border border-stone-200/60 shadow-sm space-y-4">
-          <div className="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-800">
-            <Share2 className="w-6 h-6" />
-          </div>
-          <h3 className="text-xl font-bold font-diary text-amber-950">Shareable Public URLs</h3>
-          <p className="text-stone-600 font-sans">
-            Generate your custom memory link (e.g. <code>slam.nathan/{`{username}`}</code>) and text it to school or college friends.
+      <section id="features" className="max-w-6xl mx-auto px-6 py-20 space-y-12">
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <h2 className="text-3xl md:text-4xl font-bold font-diary text-stone-900">
+            Engineered with Rich Features
+          </h2>
+          <p className="text-sm font-sans text-stone-500">
+            A perfect balance of nostalgic design and modern, robust backend technologies.
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-3xl border border-stone-200/60 shadow-sm space-y-4">
-          <div className="w-12 h-12 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-800">
-            <Heart className="w-6 h-6" />
-          </div>
-          <h3 className="text-xl font-bold font-diary text-amber-950">Scrapbook page-turner</h3>
-          <p className="text-stone-600 font-sans">
-            Flip through memory cards inside an animated book with responsive shadows, page curls, and nostalgic hand-drawn elements.
-          </p>
-        </div>
-
-        <div className="bg-white p-8 rounded-3xl border border-stone-200/60 shadow-sm space-y-4">
-          <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-800">
-            <Users className="w-6 h-6" />
-          </div>
-          <h3 className="text-xl font-bold font-diary text-amber-950">Anonymity & Safety</h3>
-          <p className="text-stone-600 font-sans">
-            Enables guests to write as anonymous users while using profanity checkers, rate limits, and report queues to keep it safe.
-          </p>
-        </div>
-      </section>
-
-      {/* Dynamic Themes Showcase Section */}
-      <section id="demo" className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-3xl md:text-5xl font-bold font-diary text-center text-stone-900 mb-16">
-          Choose A Nostalgic Theme
-        </h2>
-        
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {themesShowcase.map((t, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ y: -8 }}
-              className={`rounded-3xl cursor-pointer min-h-[220px] flex flex-col justify-between shadow-sm relative overflow-hidden ${t.cls}`}
-            >
-              {idx === 2 && (
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-5 polaroid-tape"></div>
-              )}
-              
-              <div>
-                <h4 className="text-2xl font-bold mb-2">{t.name}</h4>
-                <p className="text-sm opacity-80">{t.desc}</p>
+          {/* Feature 1 - School Notebook theme (Share Anywhere) */}
+          <div className="theme-notebook-paper font-notebook text-slate-800 p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-h-[220px] flex flex-col justify-between pl-16">
+            <div className="absolute top-0 bottom-0 left-12 w-[1px] bg-red-400/40" />
+            <div className="space-y-3">
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 border border-slate-200">
+                <Link2 className="w-5 h-5" />
               </div>
+              <h3 className="text-xl font-bold">Share Your Link</h3>
+              <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                Get a custom memory link (like a digital journal) to text your classmates, email school friends, or put in your social bio.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-4 select-none">Notebook Skin</span>
+          </div>
 
-              <div className="pt-6 border-t border-current/10 mt-6 flex justify-between items-center text-sm font-semibold">
-                <span>View Sample Draft</span>
-                <span className="text-xs px-2 py-0.5 rounded border border-current">Aesthetic</span>
+          {/* Feature 2 - Y2K Cyber theme (Realistic Flipbook) */}
+          <div className="theme-y2k-grid font-y2k text-pink-500 p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-h-[220px] flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 bg-pink-950/30 rounded-xl flex items-center justify-center text-pink-500 border border-pink-500/30 y2k-neon-border">
+                <Heart className="w-5 h-5" />
               </div>
-            </motion.div>
-          ))}
+              <h3 className="text-xl font-bold y2k-neon-glow">Interactive Flipbook</h3>
+              <p className="text-xs text-pink-400/80 font-sans leading-relaxed">
+                Flip through friends' entries inside a gorgeous, realistic animated book with page-curls, sound visuals, and nostalgic designs.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-pink-500/50 mt-4 select-none">Y2K Cyber Skin</span>
+          </div>
+
+          {/* Feature 3 - Polaroid Memory theme (Download/Print PDF) */}
+          <div className="theme-polaroid-frame font-polaroid text-indigo-950 p-8 rounded-3xl relative overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 min-h-[220px] flex flex-col justify-between pb-10">
+            <div className="absolute top-1 left-1/2 -translate-x-1/2 w-16 h-5 polaroid-tape"></div>
+            <div className="space-y-3 mt-2">
+              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-900 border border-indigo-100">
+                <FileDown className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold">Print Your Book</h3>
+              <p className="text-xs text-indigo-900/80 font-sans leading-relaxed">
+                Keep your memories offline. Export your complete scrapbook into a high-quality PDF ready to print as a physical book.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-900/40 mt-4 select-none">Polaroid Skin</span>
+          </div>
+
+          {/* Feature 4 - Vintage Diary theme (Spam Protection / Safety) */}
+          <div className="theme-diary-parchment font-diary text-amber-950 p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-h-[220px] flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 bg-amber-100/50 rounded-xl flex items-center justify-center text-amber-900 border border-amber-200">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold">Safe & Spam-Free</h3>
+              <p className="text-xs text-amber-950/80 font-sans leading-relaxed">
+                Enjoy your scrapbook safely. Smart filters automatically block bad language, spam bots, and let you moderate offensive entries.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-amber-900/50 mt-4 select-none">Vintage Diary Skin</span>
+          </div>
+
+          {/* Feature 5 - Dark Academia theme (Anonymous Scribbles) */}
+          <div className="theme-academia-sepia font-academia text-[#3e2723] p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-h-[220px] flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 bg-[#dfd6c0] rounded-xl flex items-center justify-center text-[#5d4037] border border-[#d4c5a9]">
+                <Activity className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold">Anonymous Scribbles</h3>
+              <p className="text-xs text-[#5d4037]/80 font-sans leading-relaxed">
+                Let your friends write under creative pen names, leave secret notes, or upload their favorite snapshot pictures.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-[#5d4037]/45 mt-4 select-none">Dark Academia Skin</span>
+          </div>
+
+          {/* Feature 6 - Doodle Sketchbook theme (Custom Scrapbook Themes) */}
+          <div className="theme-doodle-sketch font-notebook text-stone-700 p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-h-[220px] flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-600 border border-stone-300">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold">Pick Nostalgic Skins</h3>
+              <p className="text-xs text-stone-600/90 font-sans leading-relaxed">
+                Express yourself by selecting from 6 childhood visual themes including notebook paper, Y2K neon, and hand-drawn doodles.
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-stone-500 mt-4 select-none">Doodle Sketch Skin</span>
+          </div>
         </div>
+
+
       </section>
 
-      {/* Footer */}
-      <footer className="text-center text-stone-400 font-sans text-sm mt-16 max-w-md mx-auto">
-        <p>&copy; {new Date().getFullYear()} SlamBook. All rights reserved.</p>
-        <p className="mt-2 text-xs">A modern social scrapbooking project built for creators.</p>
-      </footer>
+
+
+
+      {/* Reusable Footer */}
+      <Footer />
     </div>
   );
 };
 
 export default LandingPage;
+

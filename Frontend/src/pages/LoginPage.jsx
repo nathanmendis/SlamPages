@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const LoginPage = () => {
   const { login, googleLogin } = useAuth();
@@ -86,99 +88,108 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen py-16 flex items-center justify-center px-6">
-      {/* Diary Styled Parchment Form Box */}
-      <div className="max-w-md w-full theme-diary-parchment font-diary p-8 rounded-3xl shadow-lg relative overflow-hidden">
-        
-        {/* Decorative Tape */}
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-6 polaroid-tape"></div>
+    <div className="min-h-screen flex flex-col bg-stone-50/50">
+      {/* Reusable Header */}
+      <Header />
 
-        <div className="text-center space-y-3 mb-8 mt-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-100 text-amber-800">
-            <BookOpen className="w-6 h-6" />
-          </div>
-          <h2 className="text-3xl font-bold tracking-tight text-amber-950">Welcome Back</h2>
-          <p className="text-sm font-sans text-stone-600">Open your digital scrapbook dashboard</p>
-        </div>
+      <div className="flex-1 py-16 flex items-center justify-center px-6">
+        {/* Diary Styled Parchment Form Box */}
+        <div className="max-w-md w-full theme-diary-parchment font-diary p-8 rounded-3xl shadow-lg relative overflow-hidden">
+          
+          {/* Decorative Tape */}
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-6 polaroid-tape"></div>
 
-        {err && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-800 text-sm font-sans flex items-center gap-2 border border-red-200/50">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <span>{err}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5 font-sans">
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-amber-950">Username</label>
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. nathan"
-              className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-900 bg-white"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-bold text-amber-950">Password</label>
-              <Link to="/forgot-password" className="text-xs text-amber-800 hover:underline">
-                Forgot Password?
-              </Link>
+          <div className="text-center space-y-3 mb-8 mt-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-100 text-amber-800">
+              <BookOpen className="w-6 h-6" />
             </div>
-            <div className="relative">
+            <h2 className="text-3xl font-bold tracking-tight text-amber-950">Welcome Back</h2>
+            <p className="text-sm font-sans text-stone-600">Open your digital scrapbook dashboard</p>
+          </div>
+
+          {err && (
+            <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-800 text-sm font-sans flex items-center gap-2 border border-red-200/50">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span>{err}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5 font-sans">
+            <div className="space-y-1.5">
+              <label className="text-sm font-bold text-amber-950">Username</label>
               <input
-                type={showPassword ? 'text' : 'password'}
+                type="text"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 pr-11 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-900 bg-white"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="e.g. nathan"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-900 bg-white"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-amber-900 transition"
-                tabIndex={-1}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
             </div>
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-bold text-amber-950">Password</label>
+                <Link to="/forgot-password" className="text-xs text-amber-800 hover:underline">
+                  Forgot Password?
+                </Link>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 pr-11 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-900 bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-amber-900 transition"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 bg-amber-900 text-white font-bold rounded-xl hover:bg-amber-800 transition duration-150 shadow-scrapbook"
+            >
+              {loading ? 'Opening Book...' : 'Login with Password'}
+            </button>
+          </form>
+
+          <div className="relative my-6 text-center font-sans">
+            <hr className="border-stone-200" />
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 bg-[#f7f1e3] text-stone-500 text-xs uppercase font-semibold">
+              Or
+            </span>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3.5 bg-amber-900 text-white font-bold rounded-xl hover:bg-amber-800 transition duration-150 shadow-scrapbook"
-          >
-            {loading ? 'Opening Book...' : 'Login with Password'}
-          </button>
-        </form>
+          {/* Real Google Sign-In Button */}
+          <div id="googleSignInBtnParent" className="w-full flex justify-center font-sans">
+            <div id="googleSignInBtn" className="w-full"></div>
+          </div>
 
-        <div className="relative my-6 text-center font-sans">
-          <hr className="border-stone-200" />
-          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 bg-[#f7f1e3] text-stone-500 text-xs uppercase font-semibold">
-            Or
-          </span>
+          <p className="mt-8 text-center text-sm font-sans text-stone-600">
+            Don't have a book yet?{' '}
+            <Link to="/signup" className="text-amber-900 font-bold hover:underline">
+              Register Here
+            </Link>
+          </p>
         </div>
-
-        {/* Real Google Sign-In Button */}
-        <div id="googleSignInBtnParent" className="w-full flex justify-center font-sans">
-          <div id="googleSignInBtn" className="w-full"></div>
-        </div>
-
-        <p className="mt-8 text-center text-sm font-sans text-stone-600">
-          Don't have a book yet?{' '}
-          <Link to="/signup" className="text-amber-900 font-bold hover:underline">
-            Register Here
-          </Link>
-        </p>
       </div>
+
+      {/* Reusable Footer */}
+      <Footer />
     </div>
   );
 };
 
 export default LoginPage;
+
