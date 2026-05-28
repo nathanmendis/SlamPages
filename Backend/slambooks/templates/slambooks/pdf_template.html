@@ -193,25 +193,49 @@
     <!-- ENTRY PAGES -->
     {% for entry in entries %}
     <div class="page entry-page theme-{{ theme_class }}">
-        <h2>Entry {{ forloop.counter }}</h2>
+        <!-- Page Header -->
+        <div class="entry-header" style="border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 0.15in; margin-bottom: 0.3in;">
+            <h2 style="font-size: 1.8em; font-family: 'Georgia', serif; font-weight: bold; display: flex; align-items: center; gap: 6px; border-bottom: none; padding-bottom: 0; margin-bottom: 4px;">
+                {{ forloop.counter }}. Page by 
+                {% if entry.anonymous_name %}
+                    {{ entry.anonymous_name }}
+                {% elif entry.author %}
+                    {{ entry.author.username }}
+                {% else %}
+                    Anonymous
+                {% endif %}
+                {% if entry.author.verified %}
+                    <span style="background-color: #f59e0b; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; margin-left: 4px; font-weight: bold; font-family: sans-serif;">✓</span>
+                {% endif %}
+            </h2>
+            <p class="meta" style="margin-bottom: 0; font-size: 0.85em; opacity: 0.7;">
+                Logged: {{ entry.created_at|date:"d/m/Y" }}
+            </p>
+        </div>
         
-        {% if entry.image_url %}
-        <div class="image-container">
-            <img src="data:image/png;base64,{{ entry.image_url|base64_encode }}" alt="Entry image">
-        </div>
-        {% endif %}
+        <!-- Entry Content -->
+        <div class="entry-body" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0.2in;">
+            {% if entry.image_url %}
+            <div class="image-container">
+                <img src="data:image/png;base64,{{ entry.image_url|base64_encode }}" alt="Entry image">
+            </div>
+            {% endif %}
 
-        <p class="meta">
-            By {% if entry.anonymous_name %}{{ entry.anonymous_name }}{% elif entry.author %}{{ entry.author.username }}{% else %}Anonymous{% endif %}
-            on {{ entry.created_at|date:"M d, Y" }}
-        </p>
-
-        {% for question_id, answer_text in entry.answers.items %}
-        <div class="question-answer">
-            <p class="question">{{ question_id }}</p>
-            <p class="answer">{{ answer_text }}</p>
+            {% for qa in entry.qa_list %}
+            <div class="question-answer" style="margin-bottom: 0.15in;">
+                <p class="question" style="font-size: 0.95em; font-weight: bold; margin-bottom: 4px;">Q: {{ qa.question }}</p>
+                <p class="answer" style="font-size: 1.1em; font-style: italic; font-family: 'Georgia', serif; opacity: 0.9; padding-left: 8px;">
+                    "{{ qa.answer }}"
+                </p>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+
+        <!-- Page Footer -->
+        <div class="entry-footer" style="display: flex; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 0.15in; margin-top: auto; font-size: 0.8em; opacity: 0.6; font-weight: bold;">
+            <span>Theme Style: {{ book.theme }}</span>
+            <span>SlamBook Keepsake</span>
+        </div>
     </div>
     {% empty %}
     <div class="page cover-page theme-{{ theme_class }}">

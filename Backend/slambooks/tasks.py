@@ -35,6 +35,27 @@ def generate_slam_pdf(book_id):
         # Get entries and prepare data
         entries = slam_book.entries.all().order_by('created_at')
         
+        # Build question map to resolve UUID keys to real questions
+        question_map = {str(q.id): q.question for q in slam_book.questions.all()}
+        
+        processed_entries = []
+        for entry in entries:
+            qa_list = []
+            for q_id, ans in entry.answers.items():
+                real_question = question_map.get(str(q_id), q_id)
+                qa_list.append({
+                    'question': real_question,
+                    'answer': ans
+                })
+            
+            processed_entries.append({
+                'anonymous_name': entry.anonymous_name,
+                'author': entry.author,
+                'created_at': entry.created_at,
+                'image_url': entry.image_url,
+                'qa_list': qa_list
+            })
+
         # Map theme to CSS class
         theme_map = {
             'School Notebook': 'notebook',
@@ -48,11 +69,12 @@ def generate_slam_pdf(book_id):
         # Prepare context for template
         context = {
             'book': slam_book,
-            'entries': entries,
+            'entries': processed_entries,
             'theme_class': theme_class,
             'owner_username': slam_book.owner.username,
             'created_date': timezone.now().strftime('%B %d, %Y')
         }
+
 
         # Render HTML from template
         html_content = render_to_string('slambooks/pdf_template.html', context)
